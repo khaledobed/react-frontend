@@ -1,0 +1,48 @@
+name: React CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      ECR_REGISTRY: 180294212716.dkr.ecr.eu-central-1.amazonaws.com
+      ECR_REPOSITORY: react-frontend
+      IMAGE_TAG: latest
+
+    steps:
+      - name: ✅ Repo klonla
+        uses: actions/checkout@v3
+
+      - name: ✅ Node kur ve bağımlılıkları yükle
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: 🔍 Testleri çalıştır
+        run: |
+          npm install
+          npm test
+
+      - name: 🐳 Docker kurulumu
+        uses: docker/setup-buildx-action@v2
+
+      - name: 🔐 AWS kimlik bilgilerini ayarla
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: 🔐 ECR login
+        run: aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $ECR_REGISTRY
+
+      - name: 🛠️ Docker image build et
+        run: docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+
+      - name: 🚀 Docker image push et
+        run: docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
