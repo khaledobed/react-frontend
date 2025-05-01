@@ -8,7 +8,9 @@ spec:
   source:
     repoURL: https://github.com/khaledobed/react-frontend.git
     targetRevision: HEAD
-    path: .
+    path: k8s
+    directory:
+      recurse: false
   destination:
     server: https://kubernetes.default.svc
     namespace: default
@@ -16,3 +18,4 @@ spec:
     automated:
       selfHeal: true
       prune: true
+
