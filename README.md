@@ -5,7 +5,7 @@ Amaç, bir React uygulamasının tam otomatik CI/CD hattı ile AWS üzerinde da�
 
 ## 🚀 Teknolojiler
 
-- React (Frontend Uygulama)
+- React (Frontend Uygulama) ........
 - Docker (Uygulama paketleme)
 - GitHub Actions (CI/CD Pipeline)
 - AWS ECR (Container registry)
